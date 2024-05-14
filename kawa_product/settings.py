@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DJANGO_SETTINGS_MODULE = "kawa_product.settings"
 
 # Application definition
 
@@ -123,3 +124,22 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+NINJA_EXTRA = {
+    'PAGINATION_CLASS': "ninja_extra.pagination.PageNumberPaginationExtra",
+    'PAGINATION_PER_PAGE': 20,
+    'THROTTLE_CLASSES': [
+        "ninja_extra.throttling.AnonRateThrottle",
+        "ninja_extra.throttling.UserRateThrottle",
+    ],
+    'THROTTLE_RATES': {
+        'user': '1000/day',
+        'anon': '100/day',
+    },
+    'NUM_PROXIES': None,
+    'ORDERING_CLASS': "ninja_extra.ordering.Ordering",
+    'SEARCHING_CLASS': "ninja_extra.searching.Search",
+    'INJECTOR_MODULES': [
+        'modules.produit_module.ProduitModule'
+    ]
+}
