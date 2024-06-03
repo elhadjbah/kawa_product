@@ -69,3 +69,12 @@ class ProduitServiceImpl(ProduitService):
             raise NotFoundException()
         return produit_to_update
 
+    @transaction.atomic
+    def delete_produit(self, produit_id: int) -> bool:
+        try:
+            produit_to_delete = Produit.objects.get(pk=produit_id)
+            produit_to_delete.delete()
+        except Produit.DoesNotExist:
+            raise NotFoundException()
+        return True
+
