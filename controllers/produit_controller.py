@@ -8,7 +8,7 @@ from ninja_extra import (
     http_get,
     http_post,
     http_put,
-    route
+    route, http_delete
 )
 from products.models import Produit
 from schemas.types import ProduitSchema, ProduitCreate, ProduitUpdate
@@ -51,8 +51,11 @@ class ProduitController:
             raise NotFoundException()
         return _produit
 
-    @http_get('test')
-    def test(self):
-        raise BadRequestException()
+    @http_delete("/{int:produit_id}")
+    def delete_produit(self, produit_id: int) -> bool:
+        try:
+            return self.produit_service.delete_produit(produit_id)
+        except NotFoundException:
+            raise NotFoundException()
 
 
