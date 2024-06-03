@@ -7,11 +7,13 @@ from ninja_extra import (
     api_controller,
     http_get,
     http_post,
-    http_put
+    http_put,
+    route
 )
 from products.models import Produit
 from schemas.types import ProduitSchema, ProduitCreate, ProduitUpdate
 from services.produit_service import ProduitService
+from products.exceptions import NotFoundException, BadRequestException
 
 
 @api_controller('/produits', tags=['API Produits'])
@@ -24,7 +26,6 @@ class ProduitController:
 
     def __init__(self, produit_service: ProduitService):
         self.produit_service = produit_service
-        self.service = produit_service
 
     @http_get('')
     def get_produits(self) -> List[ProduitSchema]:
@@ -32,7 +33,10 @@ class ProduitController:
 
     @http_get('/{int:produit_id}')
     def get_produit(self, produit_id: int) -> ProduitSchema:
-        return self.produit_service.get_produit(produit_id)
+        try:
+            return self.produit_service.get_produit(produit_id)
+        except Produit.DoesNotExist:
+            raise NotFoundException()
 
     @http_post('', response={201: ProduitSchema})
     def create_produit(self, produit: ProduitCreate) -> ProduitSchema:
@@ -40,4 +44,15 @@ class ProduitController:
 
     @http_put('/{int:produit_id}')
     def update_produit(self, produit_id: int, produit: ProduitUpdate) -> ProduitSchema:
-        return self.produit_service.update_produit(produit_id, produit)
+        _produit = None
+        try:
+            _produit = self.produit_service.update_produit(produit_id, produit)
+        except NotFoundException:
+            raise NotFoundException()
+        return _produit
+
+    @http_get('test')
+    def test(self):
+        raise BadRequestException()
+
+
