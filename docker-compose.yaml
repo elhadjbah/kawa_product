@@ -1,0 +1,37 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.4
+    container_name: mysql
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_DATABASE: "kawa_product"
+      MYSQL_USER: "root"
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
+      timeout: 20s
+      retries: 10
+    env_file:
+      - .env
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kawa_product_app
+    command: python manage.py migrate --noinput && python manage.py collectstatic --noinput && uvicorn kawa_product.asgi:application --host 127.0.0.1 --port 3001
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    depends_on:
+      - db
+volumes:
+  data:

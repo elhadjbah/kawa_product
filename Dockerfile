@@ -1,6 +1,13 @@
-FROM python:3.10-slim-buster
+FROM python:3-buster
 
 WORKDIR /app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install mysql dependencies
+RUN apt-get install gcc default-libmysqlclient-dev -y
 
 # Installer les dépendances système pour psycopg2 (si nécessaire)
 RUN apt-get update && apt-get install -y \
@@ -8,13 +15,16 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update
+
+# install dependencies
+RUN pip install -U pip setuptools wheel
+RUN pip install --upgrade pip
+
 COPY requirements.txt /app/
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt --no-cache-dir
 
 COPY . /app/
 
 EXPOSE 3001
-
-# Définir la commande de démarrage par défaut
-CMD ["uvicorn", "kawa_product.asgi:application", "--host", "0.0.0.0", "--port", "3001", "--workers", "3"]
