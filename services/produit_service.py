@@ -1,5 +1,6 @@
 import logging
 from typing import List
+from abc import ABC, abstractmethod
 
 from django.conf import Settings
 from django.db import transaction
@@ -11,20 +12,24 @@ from schemas.types import ProduitSchema, ProduitCreate, ProduitUpdate
 logger = logging.getLogger()
 
 
-class ProduitService:
-
+class ProduitService(ABC):
+    @abstractmethod
     def get_produits(self):
         pass
 
+    @abstractmethod
     def get_produit(self, produit_id: int):
         pass
 
+    @abstractmethod
     def create_produit(self, produit: ProduitCreate) -> ProduitSchema:
         pass
 
+    @abstractmethod
     def update_produit(self, produit_id: int, produit: ProduitUpdate):
         pass
 
+    @abstractmethod
     def delete_produit(self, produit_id: int):
         pass
 
@@ -60,7 +65,7 @@ class ProduitServiceImpl(ProduitService):
         produit_to_update = None
         try:
             produit_to_update = Produit.objects.get(pk=produit_id)
-            if not produit.dict():
+            if not all(produit.dict().values()):
                 raise BadRequestException()
             for attr, value in produit.dict().items():
                 setattr(produit_to_update, attr, value)
