@@ -1,4 +1,4 @@
-FROM python:3-buster
+FROM python:3.11-slim-buster
 
 WORKDIR /app
 
@@ -6,14 +6,14 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install mysql dependencies
-RUN apt-get install gcc default-libmysqlclient-dev -y
-
-# Installer les dépendances système pour psycopg2 (si nécessaire)
+# Installer les dépendances système pour mysql (si nécessaire)
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libpq-dev \
+    default-libmysqlclient-dev \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
+
+
 
 RUN apt-get update
 

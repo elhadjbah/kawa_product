@@ -1,21 +1,24 @@
 version: '3'
 services:
   db:
-    image: mysql:8.4
+    image: mysql:5.7-debian
     container_name: mysql
     restart: always
     volumes:
       - data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ""
-      MYSQL_DATABASE: "kawa_product"
-      MYSQL_USER: "root"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     ports:
-      - "3306:3306"
+      - "3307:3306"
+    expose:
+      - "3306"
     healthcheck:
-      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p ${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
       timeout: 20s
-      retries: 10
+      retries: 5
     env_file:
       - .env
   backend:
