@@ -30,7 +30,7 @@ ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', cast=lambda v: [s.strip() for s i
 DJANGO_SETTINGS_MODULE = "kawa_product.settings"
 
 # Application definition
-
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
