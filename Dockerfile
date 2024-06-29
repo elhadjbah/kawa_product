@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-
 RUN apt-get update
 
-# install dependencies
+RUN apt-get update && apt-get install -y netcat-openbsd
+
 RUN pip install -U pip setuptools wheel
 RUN pip install --upgrade pip
 
@@ -27,4 +27,8 @@ RUN pip install -r requirements.txt --no-cache-dir
 
 COPY . /app/
 
+RUN python manage.py migrate --noinput && python manage.py collectstatic --noinput
+
 EXPOSE 3001
+
+CMD uvicorn kawa_product.asgi:application --host 0.0.0.0 --port 3001
