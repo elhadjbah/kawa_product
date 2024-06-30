@@ -25,9 +25,12 @@ COPY requirements.txt /app/
 
 RUN pip install -r requirements.txt --no-cache-dir
 
+RUN mkdir static
+
 COPY . /app/
 
 RUN python manage.py migrate --noinput && python manage.py collectstatic --noinput
+
 
 EXPOSE 3001
 
