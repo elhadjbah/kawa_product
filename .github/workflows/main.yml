@@ -1,6 +1,8 @@
 name: Gestion des pushs
 run-name: ${{ github.actor }} is testing out GitHub Actions
 
+permissions: write-all
+
 on: 
   push:
     branches: [feature/ci_cd]
