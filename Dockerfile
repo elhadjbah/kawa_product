@@ -29,7 +29,7 @@ RUN mkdir static
 
 COPY . /app/
 
-RUN python manage.py migrate --noinput && python manage.py collectstatic --noinput
+#RUN python manage.py migrate --noinput && python manage.py collectstatic --noinput
 
 
 EXPOSE 3001
