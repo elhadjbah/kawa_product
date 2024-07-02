@@ -26,7 +26,7 @@ jobs:
 
       - name: Exécution des tests
         run: |
-          python -m unittest discover tests/
+          python -m unittest discover products/tests/
 
   build-and-push-docker:
     needs: build-and-test
