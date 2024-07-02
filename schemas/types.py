@@ -16,12 +16,12 @@ class ProduitCreate(ModelSchema):
 
 
 class ProduitUpdate(ModelSchema):
-    nom: Optional[str]
-    description: Optional[str]
-    prix: Optional[float]
-    stock: Optional[int]
+    nom: Optional[str] = None
+    description: Optional[str] = None
+    prix: Optional[float] = None
+    stock: Optional[int] = None
 
     class Meta:
         model = Produit
         exclude = ['id']
-        # optional_fields = ['nom', 'description', 'prix', 'stock']
+        optional_fields = ['nom', 'description', 'prix', 'stock']

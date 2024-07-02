@@ -1,14 +1,11 @@
 from typing import List
 
 from ninja_extra import (
-    ModelConfig,
-    ModelControllerBase,
-    ModelSchemaConfig,
     api_controller,
     http_get,
     http_post,
     http_put,
-    route, http_delete
+    http_delete
 )
 from products.models import Produit
 from schemas.types import ProduitSchema, ProduitCreate, ProduitUpdate
