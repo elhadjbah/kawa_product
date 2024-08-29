@@ -1,4 +1,4 @@
-from ninja import ModelSchema
+from ninja import ModelSchema, Schema
 from products.models import Produit
 from typing import Optional
 
@@ -25,3 +25,9 @@ class ProduitUpdate(ModelSchema):
         model = Produit
         exclude = ['id']
         optional_fields = ['nom', 'description', 'prix', 'stock']
+
+
+class AuthResponse(Schema):
+    message: str
+    userId: Optional[int] = None
+    error: Optional[str] = None
