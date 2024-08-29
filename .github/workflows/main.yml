@@ -40,15 +40,15 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t my_django_project:latest .
+        run: docker build -t kawa_product:latest .
 
       - name: Push Docker image
         run: |
-          docker tag my_django_project:latest ghcr.io/${{ github.repository_owner }}/my_django_project:latest
-          docker push ghcr.io/${{ github.repository_owner }}/my_django_project:latest
+          docker tag kawa_product:latest ghcr.io/${{ github.repository_owner }}/kawa_product:latest
+          docker push ghcr.io/${{ github.repository_owner }}/kawa_product:latest
 
       - name: Display Docker image path
-        run: echo "ghcr.io/${{ github.repository_owner }}/my_django_project:latest"
+        run: echo "ghcr.io/${{ github.repository_owner }}/kawa_product:latest"
 
 
         

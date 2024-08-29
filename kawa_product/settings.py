@@ -81,13 +81,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('MYSQL_DATABASE'),
-        'USER': config('MYSQL_USER', 'root'),
-        'PASSWORD': config('MYSQL_PASSWORD', ''),
+        'USER': config('MYSQL_USER'),
+        'PASSWORD': config('MYSQL_PASSWORD'),
         'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT', '3307', cast=lambda port: int(port)),
+        'PORT': config('DB_PORT', '3306', cast=lambda port: int(port)),
         'TEST': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': config('MYSQL_TEST_DATABASE'),
+            'HOST': config('DB_TEST_HOST'),
+            'PORT': config('DB_PORT', '3306', cast=lambda port: int(port)),
         }
     }
 }
