@@ -1,3 +1,5 @@
+import requests
+from decouple import config
 from django.test import TestCase, Client
 from django.conf import settings
 from products.models import Produit
@@ -11,11 +13,42 @@ class ProduitControllerTest(TestCase):
     def setUp(self):
         self.SUCCESS_PRODUCT_ID = 1
         self.ERROR_PRODUCT_ID = 10000
+        self.API_BASE_URL = config('CUSTOMER_API_URL')
         self.produit_controller = ProduitController(ProduitServiceImpl(settings))
         self.client = Client()
         for i in range(1, 4):
             Produit.objects.create(nom=f"Produit {i}", description=f"Description produit {i}", prix=10 * i,
                                    stock=100 - (10 * i))
+        self.new_user = {
+            "nom": "epsi",
+            "prenom": "test",
+            "date_naissance": "1999/09/13",
+            "email": "jix@epsi.com",
+            "mot_de_passe": "jix@test.epsi",
+            "adresse": "7 Avenue de Lombez, 31300"
+        }
+        self.user_id = None
+
+    def tearDown(self):
+        response = requests.delete(
+            f"{self.API_BASE_URL}/api/customers/{self.user_id}")
+
+    def _create_user(self, new_user):
+        response = requests.post(
+            f"{self.API_BASE_URL}/api/customers",
+            data=new_user
+        )
+        return response
+
+    def _login(self):
+        response = requests.post(
+            f"{self.API_BASE_URL}/api/login",
+            data={
+                "email": self.new_user['email'],
+                "mot_de_passe": self.new_user['mot_de_passe']
+            }
+        )
+        return response
 
     def test_get_produits_success(self):
         response = self.client.get("/api/produits")
@@ -66,6 +99,7 @@ class ProduitControllerTest(TestCase):
         self.assertEqual(response.json(), {"id": self.SUCCESS_PRODUCT_ID, **produit_json})
 
     def test_update_raise_error(self):
-        produit_updated = ProduitUpdate(**{"nom": "Produit X1", "description": "Produit X1 desc", "prix": 125.0, "stock": 50})
+        produit_updated = ProduitUpdate(
+            **{"nom": "Produit X1", "description": "Produit X1 desc", "prix": 125.0, "stock": 50})
         with self.assertRaises(NotFoundException):
             self.produit_controller.update_produit(self.ERROR_PRODUCT_ID, produit_updated)

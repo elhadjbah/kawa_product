@@ -21,5 +21,5 @@ class ApiKey(APIKeyHeader):
         print(f"x-access-token : {key}")
         auth_response = self.verify_token(key)
         print(f"auth response : {auth_response}")
-        if auth_response.error is None:
+        if auth_response.error is None and auth_response.message == "Token valide":
             return True
