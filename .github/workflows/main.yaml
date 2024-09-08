@@ -25,6 +25,7 @@ jobs:
         run: curl -v http://localhost:3000
 
   build-and-test:
+    needs: pull_and_run_docker_image
     runs-on: ubuntu-latest
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
