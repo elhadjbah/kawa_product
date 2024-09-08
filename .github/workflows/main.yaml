@@ -52,7 +52,18 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t kawa_product:latest .
+        run: |
+          docker build -e SECRET_KEY="${{ secrets.SECRET_KEY }}"
+          -e DEBUG="${{ secrets.DEBUG }}"
+          -e CUSTOMER_API_URL="${{ secrets.CUSTOMER_API_URL }}"
+          -e DB_HOST="${{ secrets.DB_HOST }}"
+          -e DB_PORT="${{ secrets.DB_PORT }}"
+          -e MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}"
+          -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}"
+          -e MYSQL_USER="${{ secrets.MYSQL_USER }}"
+          -e MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}"
+          -e MYSQL_TEST_DATABASE="${{ secrets.MYSQL_TEST_DATABASE }}"
+          -t kawa_product:latest .
 
       - name: Push Docker image
         run: |
