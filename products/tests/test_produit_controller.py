@@ -28,6 +28,9 @@ class ProduitControllerTest(TestCase):
             "adresse": "7 Avenue de Lombez, 31300"
         }
         self.user_id = None
+        self.headers = {
+            "x-access-token": self.get_auth_token()
+        }
 
     def tearDown(self):
         response = requests.delete(
@@ -81,34 +84,31 @@ class ProduitControllerTest(TestCase):
             self.produit_controller.get_produit(self.ERROR_PRODUCT_ID)
 
     def test_delete_produit_success(self):
-        token = self.get_auth_token()
-        response = self.client.delete(f"/api/produits/{self.SUCCESS_PRODUCT_ID}")
+        response = self.client.delete(f"/api/produits/{self.SUCCESS_PRODUCT_ID}", headers=self.headers)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), True)
 
     def test_delete_produit_error(self):
         token = self.get_auth_token()
-        response = self.client.delete(f"/api/produits/{self.ERROR_PRODUCT_ID}")
+        response = self.client.delete(f"/api/produits/{self.ERROR_PRODUCT_ID}", headers=self.headers)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"detail": "Not Found : La ressource demandée n'a pas été retrouvée"})
 
     def test_create_produit(self):
-        token = self.get_auth_token()
         produit_json = {"nom": "Produit X", "description": "Produit X desc", "prix": 15.0, "stock": 80}
-        response = self.client.post("/api/produits", data=produit_json, content_type="application/json")
+        response = self.client.post("/api/produits", data=produit_json,
+                                    content_type="application/json", headers=self.headers)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json(), {"id": Produit.objects.count(), **produit_json})
 
     def test_update_produit_success(self):
-        token = self.get_auth_token()
         produit_json = {"nom": "Produit X1", "description": "Produit X1 desc", "prix": 125.0, "stock": 50}
         response = self.client.put(f"/api/produits/{self.SUCCESS_PRODUCT_ID}", data=produit_json,
-                                   content_type="application/json")
+                                   content_type="application/json", headers=self.headers)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"id": self.SUCCESS_PRODUCT_ID, **produit_json})
 
     def test_update_raise_error(self):
-        token = self.get_auth_token()
         produit_updated = ProduitUpdate(
             **{"nom": "Produit X1", "description": "Produit X1 desc", "prix": 125.0, "stock": 50})
         with self.assertRaises(NotFoundException):
