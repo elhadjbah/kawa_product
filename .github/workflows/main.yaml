@@ -56,6 +56,18 @@ jobs:
   build-and-push-docker:
     needs: build-and-test
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ secrets.DEBUG }}
+      DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+      CUSTOMER_API_URL: ${{ secrets.CUSTOMER_API_URL }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+      MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+      MYSQL_USER: ${{ secrets.MYSQL_USER }}
+      MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+      MYSQL_TEST_DATABASE: ${{ secrets.MYSQL_TEST_DATABASE }}
 
     steps:
       - name: Checkout code
@@ -66,19 +78,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build \
-          -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
-          -e DEBUG="${{ secrets.DEBUG }}" \
-          -e DJANGO_ALLOWED_HOSTS="${{ secrets.DJANGO_ALLOWED_HOSTS }}" \
-          -e CUSTOMER_API_URL="${{ secrets.CUSTOMER_API_URL }}" \
-          -e DB_HOST="${{ secrets.DB_HOST }}" \
-          -e MYSQL_PORT="${{ secrets.MYSQL_PORT }}" \
-          -e MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" \
-          -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" \
-          -e MYSQL_USER="${{ secrets.MYSQL_USER }}" \
-          -e MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}" \
-          -e MYSQL_TEST_DATABASE="${{ secrets.MYSQL_TEST_DATABASE }}" \
-          -t kawa_product:latest .
+          docker build -t kawa_product:latest .
 
       - name: Push Docker image
         run: |
