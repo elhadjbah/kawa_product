@@ -22,7 +22,7 @@ jobs:
         run: docker ps
 
       - name: Test Customers APi
-        run: curl -v http://localhost:3000
+        run: curl -v http://host.docker.internal:3000
 
   build-and-test:
     needs: pull_and_run_docker_image
