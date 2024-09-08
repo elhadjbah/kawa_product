@@ -28,7 +28,7 @@ jobs:
       DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
       CUSTOMER_API_URL: ${{ secrets.CUSTOMER_API_URL }}
       DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
+      MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
       MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
       MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
       MYSQL_USER: ${{ secrets.MYSQL_USER }}
@@ -71,7 +71,7 @@ jobs:
           -e DJANGO_ALLOWED_HOSTS="${{ secrets.DJANGO_ALLOWED_HOSTS }}"
           -e CUSTOMER_API_URL="${{ secrets.CUSTOMER_API_URL }}"
           -e DB_HOST="${{ secrets.DB_HOST }}"
-          -e DB_PORT="${{ secrets.DB_PORT }}"
+          -e MYSQL_PORT="${{ secrets.MYSQL_PORT }}"
           -e MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}"
           -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}"
           -e MYSQL_USER="${{ secrets.MYSQL_USER }}"
