@@ -8,24 +8,8 @@ on:
     branches: [dev5]
 
 jobs:
-  pull_and_run_docker_image:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Pull Docker Image
-        run: docker pull ghcr.io/florent228/kawa_customer:latest
-
-      - name: Run Docker Image with Port Mapping
-        run: docker run -d --name kawa_customer -p 3000:3000 ghcr.io/florent228/kawa_customer:latest
-
-      - name: Display Running Containers
-        run: docker ps
-
-      - name: Test Customers APi
-        run: sleep 30 && curl -v http://localhost:3000
 
   build-and-test:
-    needs: pull_and_run_docker_image
     runs-on: ubuntu-latest
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -41,6 +25,17 @@ jobs:
       MYSQL_TEST_DATABASE: ${{ secrets.MYSQL_TEST_DATABASE }}
 
     steps:
+      - name: Pull Docker Image
+        run: docker pull ghcr.io/florent228/kawa_customer:latest
+
+      - name: Run Docker Image with Port Mapping
+        run: docker run -d --name kawa_customer -p 3000:3000 ghcr.io/florent228/kawa_customer:latest
+
+      - name: Display Running Containers
+        run: docker ps
+
+      - name: Test Customers APi
+        run: sleep 30 && curl -v http://localhost:3000
       - name: Checkout code
         uses: actions/checkout@v2
 
