@@ -78,7 +78,7 @@ class AuthTest(TestCase):
         for key in ['message', 'userId']:
             self.assertIn(key, response.json())
 
-    def test_wrong_token(self):
+    def test_wrong_token(self): # getting token
         response = self._verify_token(token="xhttfyavak")
         self.assertEqual(response.status_code, 401)
         self.assertIn('message', response.json())
