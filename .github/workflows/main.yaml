@@ -1,0 +1,98 @@
+name: Gestion des pushs
+run-name: ${{ github.actor }} is testing out GitHub Actions
+
+permissions: write-all
+
+on:
+  push:
+    branches: [dev3]
+
+jobs:
+  pull_and_run_docker_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull Docker Image
+        run: docker pull ghcr.io/florent228/kawa_customer:latest
+
+      - name: Run Docker Image with Port Mapping
+        run: docker run -d --name kawa_customer -p 3000:3000 ghcr.io/florent228/kawa_customer:latest
+
+      - name: Display Running Containers
+        run: docker ps
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configuration de l'environnement python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Exécution des tests
+        run: |
+          python manage.py test products.tests
+
+  build-and-push-docker:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t kawa_product:latest .
+
+      - name: Push Docker image
+        run: |
+          docker tag kawa_product:latest ghcr.io/${{ github.repository_owner }}/kawa_product:latest
+          docker push ghcr.io/${{ github.repository_owner }}/kawa_product:latest
+
+      - name: Display Docker image path
+        run: echo "ghcr.io/${{ github.repository_owner }}/kawa_product:latest"
+
+  merge-branch-main:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Récupération de la date actuelle
+        id: get_current_date
+        run: |
+          echo "CURRENT_DATE=$(date +'%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+
+      - name: Merge branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ needs.build-and-test.result }}" == "success" ]; then
+            echo "Tests passed, merging to master..."
+            git fetch origin
+            git checkout main
+            git pull origin main
+            git fetch origin dev3:dev3  # Récupération explicite de la branche dev
+            git merge dev3
+            git push origin main
+
+
