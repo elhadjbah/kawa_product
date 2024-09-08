@@ -76,6 +76,9 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Allowed host issues
+        run: echo "${{ env.DJANGO_ALLOWED_HOSTS }} ${{ secrets.DB_HOST }}"
+
       - name: Build Docker image
         run: |
           docker build -t kawa_product:latest .
