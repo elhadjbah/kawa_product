@@ -5,7 +5,7 @@ permissions: write-all
 
 on:
   push:
-    branches: [dev3]
+    branches: [dev5]
 
 jobs:
   pull_and_run_docker_image:
@@ -91,8 +91,8 @@ jobs:
             git fetch origin
             git checkout main
             git pull origin main
-            git fetch origin dev3:dev3  # Récupération explicite de la branche dev
-            git merge dev3
+            git fetch origin dev5:dev5  # Récupération explicite de la branche dev
+            git merge dev5
             git push origin main
 
 
