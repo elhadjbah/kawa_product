@@ -89,7 +89,6 @@ class ProduitControllerTest(TestCase):
         self.assertEqual(response.json(), True)
 
     def test_delete_produit_error(self):
-        token = self.get_auth_token()
         response = self.client.delete(f"/api/produits/{self.ERROR_PRODUCT_ID}", headers=self.headers)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"detail": "Not Found : La ressource demandée n'a pas été retrouvée"})
