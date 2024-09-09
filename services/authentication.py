@@ -1,9 +1,10 @@
-from decouple import config
+# from decouple import config
+from os import getenv
 import requests
 from ninja.security import APIKeyHeader
 from schemas.types import AuthResponse
 
-API_BASE_URL = config('CUSTOMER_API_URL')
+API_BASE_URL = getenv('CUSTOMER_API_URL')
 
 class ApiKey(APIKeyHeader):
     param_name = "x-access-token"

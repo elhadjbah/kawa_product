@@ -1,5 +1,6 @@
 import requests
-from decouple import config
+# from decouple import config
+from os import getenv
 from django.test import TestCase, Client
 from django.conf import settings
 from products.models import Produit
@@ -13,7 +14,7 @@ class ProduitControllerTest(TestCase):
     def setUp(self):
         self.SUCCESS_PRODUCT_ID = 1
         self.ERROR_PRODUCT_ID = 10000
-        self.API_BASE_URL = config('CUSTOMER_API_URL')
+        self.API_BASE_URL = getenv('CUSTOMER_API_URL')
         self.produit_controller = ProduitController(ProduitServiceImpl(settings))
         self.client = Client()
         for i in range(1, 4):
