@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ayv*rgaj7!w(w%nh$0!4r@yzr+twkq!t2qb7^@tng5jkh05#da
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(' ')])
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 
 DJANGO_SETTINGS_MODULE = "kawa_product.settings"
 
