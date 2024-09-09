@@ -35,7 +35,7 @@ jobs:
         run: docker ps
 
       - name: Test Customers APi
-        run: sleep 30 && curl -v http://localhost:3000
+        run: sleep 10 && curl -v http://localhost:3000
       - name: Checkout code
         uses: actions/checkout@v2
 
