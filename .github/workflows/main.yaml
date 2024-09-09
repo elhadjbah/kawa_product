@@ -81,7 +81,19 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t kawa_product:latest .
+              docker build \
+              --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              --build-arg DEBUG=${{ secrets.DEBUG }} \
+              --build-arg ACL_LIST=${{ secrets.ACL_LIST }} \
+              --build-arg CUSTOMER_API_URL=${{ secrets.CUSTOMER_API_URL }} \
+              --build-arg DB_HOST=${{ secrets.DB_HOST }} \
+              --build-arg MYSQL_PORT=${{ secrets.MYSQL_PORT }} \
+              --build-arg MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} \
+              --build-arg MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} \
+              --build-arg MYSQL_USER=${{ secrets.MYSQL_USER }} \
+              --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
+              --build-arg MYSQL_TEST_DATABASE=${{ secrets.MYSQL_TEST_DATABASE }} \
+              -t kawa_product:latest .
 
       - name: Push Docker image
         run: |
