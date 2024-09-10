@@ -84,7 +84,6 @@ jobs:
       - name: Build Docker image
         run: |
               docker build \
-              --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} \
               --build-arg DEBUG=${{ secrets.DEBUG }} \
               --build-arg ALLOWED_HOSTS_1=${{ secrets.ALLOWED_HOSTS_1 }} \
               --build-arg ALLOWED_HOSTS_2=${{ secrets.ALLOWED_HOSTS_2 }} \
