@@ -14,7 +14,8 @@ jobs:
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       DEBUG: ${{ secrets.DEBUG }}
-      ACL_LIST: ${{ secrets.ACL_LIST }}
+      ALLOWED_HOSTS_1: ${{ secrets.ALLOWED_HOSTS_1 }}
+      ALLOWED_HOSTS_2: ${{ secrets.ALLOWED_HOSTS_2 }}
       CUSTOMER_API_URL: ${{ secrets.CUSTOMER_API_URL }}
       DB_HOST: ${{ secrets.DB_HOST }}
       MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
@@ -59,7 +60,8 @@ jobs:
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       DEBUG: ${{ secrets.DEBUG }}
-      ACL_LIST: ${{ secrets.ACL_LIST }}
+      ALLOWED_HOSTS_1: ${{ secrets.ALLOWED_HOSTS_1 }}
+      ALLOWED_HOSTS_2: ${{ secrets.ALLOWED_HOSTS_2 }}
       CUSTOMER_API_URL: ${{ secrets.CUSTOMER_API_URL }}
       DB_HOST: ${{ secrets.DB_HOST }}
       MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
@@ -77,14 +79,15 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Allowed host issues
-        run: echo "${{ env.ACL_LIST }} ${{ secrets.DB_HOST }}"
+        run: echo "${{ env.ALLOWED_HOSTS_1 }} ${{ env.ALLOWED_HOSTS_2 }} ${{ secrets.DB_HOST }}"
 
       - name: Build Docker image
         run: |
               docker build \
               --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} \
               --build-arg DEBUG=${{ secrets.DEBUG }} \
-              --build-arg ACL_LIST=${{ secrets.ACL_LIST }} \
+              --build-arg ALLOWED_HOSTS_1=${{ secrets.ALLOWED_HOSTS_1 }} \
+              --build-arg ALLOWED_HOSTS_2=${{ secrets.ALLOWED_HOSTS_2 }} \
               --build-arg CUSTOMER_API_URL=${{ secrets.CUSTOMER_API_URL }} \
               --build-arg DB_HOST=${{ secrets.DB_HOST }} \
               --build-arg MYSQL_PORT=${{ secrets.MYSQL_PORT }} \
