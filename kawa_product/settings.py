@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-# from decouple import config
-from os import getenv
+from decouple import config
 from pathlib import Path
 import os
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ayv*rgaj7!w(w%nh$0!4r@yzr+twkq!t2qb7^@tng5jkh05#da
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [getenv('ALLOWED_HOSTS_1'), getenv('ALLOWED_HOSTS_2')]
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(' ')])
 
 DJANGO_SETTINGS_MODULE = "kawa_product.settings"
 
@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ninja_extra',
-    'products'
+    # 'products',  
+    'products.apps.ProductsConfig',  # Utilisez la classe `ProductsConfig`
 ]
 
 MIDDLEWARE = [
@@ -81,14 +82,14 @@ WSGI_APPLICATION = 'kawa_product.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': getenv('MYSQL_DATABASE'),
-        'USER': getenv('MYSQL_USER', 'root'),
-        'PASSWORD': getenv('MYSQL_PASSWORD', ''),
-        'HOST': getenv('DB_HOST', 'mysql'),
-        'PORT': int(getenv('MYSQL_PORT', '3307')),
+        'NAME': config('MYSQL_DATABASE'),
+        'USER': config('MYSQL_USER', 'root'),
+        'PASSWORD': config('MYSQL_PASSWORD', ''),
+        'HOST': config('DB_HOST', 'mysql'),
+        'PORT': config('MYSQL_PORT', '3307', cast=lambda port: int(port)),
         'TEST': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': getenv('MYSQL_TEST_DATABASE'),
+            'NAME': config('MYSQL_TEST_DATABASE'),
         }
     }
 }
@@ -152,4 +153,30 @@ NINJA_EXTRA = {
     'INJECTOR_MODULES': [
         'modules.produit_module.ProduitModule'
     ]
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',  # Assurez-vous que ce niveau est au moins 'INFO' ou 'DEBUG'
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Capture les messages INFO
+            'propagate': True,
+        },
+        'your_logger_name': {  # Remplacez par le nom de votre logger s'il est spécifique
+            'handlers': ['console'],
+            'level': 'INFO',  # Assurez-vous que le niveau est bien 'INFO' ou 'DEBUG'
+            'propagate': True,
+        },
+    },
 }

@@ -1,5 +1,4 @@
 from typing import List
-
 from ninja_extra import (
     api_controller,
     http_get,
@@ -9,21 +8,27 @@ from ninja_extra import (
 )
 from products.models import Produit
 from schemas.types import ProduitSchema, ProduitCreate, ProduitUpdate
-from services.produit_service import ProduitService
+from services.produit_service import ProduitServiceImpl
+from services.rabbitmq_service import publish_to_queue, consume_from_queue
 from services.authentication import ApiKey
+from threading import Thread
 from products.exceptions import NotFoundException, BadRequestException
+import logging
 
+# Configuration des logs
+logger = logging.getLogger(__name__)
 
 @api_controller('/produits', tags=['API Produits'])
 class ProduitController:
-    # class ProduitController(ModelControllerBase):
-    # model_config = ModelConfig(
-    #     model=Produit,
-    #     schema_config=ModelSchemaConfig()
-    # )
 
-    def __init__(self, produit_service: ProduitService):
+    def __init__(self, produit_service: ProduitServiceImpl):
         self.produit_service = produit_service
+
+        logger.info("Démarrage du consommateur RabbitMQ pour la validation de produit")
+        # Démarrer l'écoute des messages RabbitMQ pour la validation des produits
+        thread = Thread(target=self.start_rabbitmq_consumer)
+        thread.daemon = True  # Le thread se termine lorsque le serveur se termine
+        thread.start()
 
     @http_get('', description="Récupérer la liste des produits disponibles")
     def get_produits(self) -> List[ProduitSchema]:
@@ -44,19 +49,52 @@ class ProduitController:
     @http_put('/{int:produit_id}', auth=ApiKey(),
               description="Mettre à jour un produit existant à partir de son id")
     def update_produit(self, produit_id: int, produit: ProduitUpdate) -> ProduitSchema:
-        _produit = None
         try:
-            _produit = self.produit_service.update_produit(produit_id, produit)
-        except NotFoundException:
+            return self.produit_service.update_produit(produit_id, produit)
+        except Produit.DoesNotExist:
             raise NotFoundException()
-        return _produit
 
     @http_delete("/{int:produit_id}", auth=ApiKey(),
                  description="Supprimer définitivement un produit existant à partir de son id")
     def delete_produit(self, produit_id: int) -> bool:
         try:
             return self.produit_service.delete_produit(produit_id)
-        except NotFoundException:
+        except Produit.DoesNotExist:
             raise NotFoundException()
 
+    # Démarrer la consommation des messages RabbitMQ
+    def start_rabbitmq_consumer(self):
+        logger.info("Consommateur RabbitMQ démarré pour la queue product_validation_queue")
+        consume_from_queue('product_validation_queue', self.validate_product_availability)
 
+    # Valider la disponibilité du produit
+    def validate_product_availability(self, message):
+        product_id = message.get('product_id')
+        requested_quantity = message.get('requested_quantity')
+        logger.info(f"Validation du produit demandée pour ID {product_id} et quantité {requested_quantity}")
+
+        try:
+            produit = Produit.objects.get(pk=product_id)
+            if produit.stock >= requested_quantity:
+                response = {
+                    'product_id': product_id,
+                    'status': 'available',
+                    'requested_quantity': requested_quantity,
+                    'client_id': message.get('client_id'),
+                    'prix_total': message.get('prix_total')
+                }
+                logger.info(f"Produit {product_id} disponible en stock.")
+            else:
+                response = {
+                    'product_id': product_id,
+                    'status': 'unavailable',
+                    'requested_quantity': requested_quantity,
+                    'client_id': message.get('client_id'),
+                    'prix_total': message.get('prix_total')
+                }
+                logger.warning(f"Produit {product_id} non disponible. Stock insuffisant.")
+            
+            # Publier la réponse dans la queue de validation
+            publish_to_queue('product_validation_response_queue', response)
+        except Produit.DoesNotExist:
+            logger.error(f"Produit avec ID {product_id} non trouvé")
