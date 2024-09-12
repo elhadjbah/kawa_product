@@ -24,7 +24,6 @@ class ProduitController:
     def __init__(self, produit_service: ProduitServiceImpl):
         self.produit_service = produit_service
 
-        logger.info("Démarrage du consommateur RabbitMQ pour la validation de produit")
         # Démarrer l'écoute des messages RabbitMQ pour la validation des produits
         thread = Thread(target=self.start_rabbitmq_consumer)
         thread.daemon = True  # Le thread se termine lorsque le serveur se termine
@@ -97,4 +96,15 @@ class ProduitController:
             # Publier la réponse dans la queue de validation
             publish_to_queue('product_validation_response_queue', response)
         except Produit.DoesNotExist:
+            # Créer une réponse indiquant que le produit n'existe pas
+            response = {
+                'product_id': product_id,
+                'status': 'not_found',
+                'requested_quantity': requested_quantity,
+                'client_id': message.get('client_id'),
+                'prix_total': message.get('prix_total')
+            }
+            # Publier la réponse dans la queue de validation
+            publish_to_queue('product_validation_response_queue', response)
+            
             logger.error(f"Produit avec ID {product_id} non trouvé")

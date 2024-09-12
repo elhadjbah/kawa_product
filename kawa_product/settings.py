@@ -158,25 +158,32 @@ NINJA_EXTRA = {
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',  # Assurez-vous que ce niveau est au moins 'INFO' ou 'DEBUG'
+        'level': 'INFO',
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',  # Capture les messages INFO
+            'level': 'INFO',
             'propagate': True,
         },
-        'your_logger_name': {  # Remplacez par le nom de votre logger s'il est spécifique
+        'pika': {
             'handlers': ['console'],
-            'level': 'INFO',  # Assurez-vous que le niveau est bien 'INFO' ou 'DEBUG'
-            'propagate': True,
+            'level': 'WARNING',  # Limitez les logs de Pika (RabbitMQ)
+            'propagate': False,
         },
     },
 }

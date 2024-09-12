@@ -7,7 +7,8 @@ logger = logging.getLogger(__name__)
 class ProductsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'products'
-
+    has_started_consumer = False 
+     
     def ready(self):
         # Démarrer le consommateur RabbitMQ
         logger.info("Démarrage du consommateur RabbitMQ pour la validation des produits")

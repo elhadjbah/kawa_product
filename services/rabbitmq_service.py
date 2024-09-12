@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 def publish_to_queue(queue_name, message):
     try:
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-        logger.info("Connexion à RabbitMQ établie pour la publication")
+        logger.debug("Connexion à RabbitMQ établie pour la publication")
         channel = connection.channel()
 
         # Déclarez la file d'attente
@@ -44,7 +44,7 @@ def consume_from_queue(queue_name, callback):
 
         # Démarrer la consommation des messages
         channel.basic_consume(queue=queue_name, on_message_callback=on_message)
-        logger.info(f"Attente des messages dans la queue {queue_name}...")
+        logger.debug(f"Attente des messages dans la queue {queue_name}...")
         channel.start_consuming()
     except Exception as e:
         logger.error(f"Erreur lors de la consommation de la queue {queue_name}: {str(e)}")
