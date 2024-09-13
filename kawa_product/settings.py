@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+# from decouple import config
 from decouple import config
+from os import getenv
 from pathlib import Path
 import os
 import logging
@@ -26,7 +28,7 @@ SECRET_KEY = 'django-insecure-ayv*rgaj7!w(w%nh$0!4r@yzr+twkq!t2qb7^@tng5jkh05#da
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(' ')])
+ALLOWED_HOSTS = [getenv('ALLOWED_HOSTS_1'), getenv('ALLOWED_HOSTS_2')]
 
 DJANGO_SETTINGS_MODULE = "kawa_product.settings"
 
@@ -40,8 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ninja_extra',
-    # 'products',  
-    'products.apps.ProductsConfig',  # Utilisez la classe `ProductsConfig`
+    # 'products'
+    'products.apps.ProductsConfig',  
 ]
 
 MIDDLEWARE = [
@@ -82,14 +84,14 @@ WSGI_APPLICATION = 'kawa_product.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('MYSQL_DATABASE'),
-        'USER': config('MYSQL_USER', 'root'),
-        'PASSWORD': config('MYSQL_PASSWORD', ''),
-        'HOST': config('DB_HOST', 'mysql'),
-        'PORT': config('MYSQL_PORT', '3307', cast=lambda port: int(port)),
+        'NAME': getenv('MYSQL_DATABASE'),
+        'USER': getenv('MYSQL_USER', 'root'),
+        'PASSWORD': getenv('MYSQL_PASSWORD', ''),
+        'HOST': getenv('DB_HOST', 'mysql'),
+        'PORT': int(getenv('MYSQL_PORT', '3307')),
         'TEST': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('MYSQL_TEST_DATABASE'),
+            'NAME': getenv('MYSQL_TEST_DATABASE'),
         }
     }
 }
@@ -154,7 +156,6 @@ NINJA_EXTRA = {
         'modules.produit_module.ProduitModule'
     ]
 }
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

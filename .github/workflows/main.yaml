@@ -5,7 +5,7 @@ permissions: write-all
 
 on:
   push:
-    branches: [dev5]
+    branches: [florent]
 
 jobs:
 
@@ -99,7 +99,7 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker tag kawa_product:latest ghcr.io/${{ github.repository_owner }}/kawa_product:latest
+          docker tag docker :latest ghcr.io/${{ github.repository_owner }}/kawa_product:latest
           docker push ghcr.io/${{ github.repository_owner }}/kawa_product:latest
 
       - name: Display Docker image path
@@ -134,8 +134,8 @@ jobs:
             git fetch origin
             git checkout main
             git pull origin main
-            git fetch origin dev5:dev5  # Récupération explicite de la branche dev
-            git merge dev5
+            git fetch origin florent:florent  # Récupération explicite de la branche dev
+            git merge florent
             git push origin main
           fi
 
