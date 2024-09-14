@@ -9,3 +9,4 @@
 .idea
 .__pycache__
 services/__pycache__
+.env_dev
