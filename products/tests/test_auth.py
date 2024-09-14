@@ -83,3 +83,4 @@ class AuthTest(TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertIn('message', response.json())
 
+#
