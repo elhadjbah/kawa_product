@@ -137,5 +137,8 @@ jobs:
             git fetch origin rabbitmq:rabbitmq  # Récupération explicite de la branche dev
             git merge -X theirs rabbitmq
             git push origin main
+          else
+            echo "Tests failed, skipping merge."
+            exit 1
           fi
 
