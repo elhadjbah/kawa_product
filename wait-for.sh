@@ -1,17 +1,15 @@
 #!/bin/sh
 
-# wait-for.sh
+HOST_PORT=$1
 
-set -e
+# Sépare l'hôte et le port
+HOST=$(echo $HOST_PORT | cut -d':' -f1)
+PORT=$(echo $HOST_PORT | cut -d':' -f2)
 
-host="$1"
-shift
-cmd="$@"
-
-until nc -z "$host"; do
-  >&2 echo "Service $host is unavailable - sleeping"
+while ! nc -z $HOST $PORT; do
+  echo "Service $HOST:$PORT is unavailable - sleeping"
   sleep 2
 done
 
->&2 echo "Service $host is up - executing command"
-exec $cmd
+echo "Service $HOST:$PORT is now available"
+exec "$@"

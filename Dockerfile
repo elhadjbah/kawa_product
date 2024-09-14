@@ -67,5 +67,4 @@ RUN chmod +x /wait-for.sh
 
 EXPOSE 3001
 
-CMD uvicorn kawa_product.asgi:application --host 0.0.0.0 --port 3001
 CMD /wait-for.sh ${RABBITMQ_HOST}:${RABBITMQ_PORT} -- uvicorn kawa_product.asgi:application --host 0.0.0.0 --port 3001
