@@ -19,7 +19,7 @@ def publish_to_queue(queue_name, message):
             exchange='',
             routing_key=queue_name,
             body=json.dumps(message),
-            properties=pika.BasicProperties(delivery_mode=2)  # rendre le message persistant
+            properties=pika.BasicProperties(delivery_mode=2) 
         )
         logger.info(f"Message envoyé à la queue {queue_name}: {message}")
         connection.close()
