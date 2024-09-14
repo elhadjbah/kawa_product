@@ -12,4 +12,6 @@ while ! nc -z $HOST $PORT; do
 done
 
 echo "Service $HOST:$PORT is now available"
+
+shift # Ignore le premier argument (host:port)
 exec "$@"
