@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 # Publier un message dans une queue RabbitMQ
 def publish_to_queue(queue_name, message):
     try:
-        connection = pika.BlockingConnection(pika.ConnectionParameters('host.docker.internal:5672'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
         logger.debug("Connexion à RabbitMQ établie pour la publication")
         channel = connection.channel()
 
@@ -29,7 +29,7 @@ def publish_to_queue(queue_name, message):
 # Consommer des messages depuis une queue RabbitMQ
 def consume_from_queue(queue_name, callback):
     try:
-        connection = pika.BlockingConnection(pika.ConnectionParameters('host.docker.internal:5672'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
         logger.info("Connexion à RabbitMQ établie pour la consommation")
         channel = connection.channel()
 
