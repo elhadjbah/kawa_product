@@ -1,5 +1,4 @@
-# from decouple import config
-from os import getenv
+from decouple import config
 import requests
 from django.test import TestCase
 
@@ -7,7 +6,7 @@ from django.test import TestCase
 class AuthTest(TestCase):
 
     def setUp(self):
-        self.API_BASE_URL = getenv('CUSTOMER_API_URL')
+        self.API_BASE_URL = config('CUSTOMER_API_URL')
         self.new_user = {
             "nom": "epsi",
             "prenom": "test",
