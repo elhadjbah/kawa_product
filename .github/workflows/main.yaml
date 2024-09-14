@@ -5,7 +5,7 @@ permissions: write-all
 
 on:
   push:
-    branches: [dev6]
+    branches: [rabbitmq]
 
 jobs:
 
@@ -134,9 +134,8 @@ jobs:
             git fetch origin
             git checkout main
             git pull origin main
-            git fetch origin dev6:dev6  # Récupération explicite de la branche dev
-            git merge dev6
+            git fetch origin rabbitmq:rabbitmq  # Récupération explicite de la branche dev
+            git merge -X theirs rabbitmq
             git push origin main
           fi
-
 
