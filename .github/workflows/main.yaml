@@ -135,7 +135,7 @@ jobs:
             git checkout main
             git pull origin main
             git fetch origin rabbitmq:rabbitmq  # Récupération explicite de la branche dev
-            git merge rabbitmq
+            git merge -X theirs rabbitmq
             git push origin main
           fi
 
