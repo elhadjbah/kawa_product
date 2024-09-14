@@ -9,8 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-# from decouple import config
-from os import getenv
+from decouple import config
 from pathlib import Path
 import os
 
@@ -26,7 +25,7 @@ SECRET_KEY = 'django-insecure-ayv*rgaj7!w(w%nh$0!4r@yzr+twkq!t2qb7^@tng5jkh05#da
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [getenv('ALLOWED_HOSTS_1'), getenv('ALLOWED_HOSTS_2')]
+ALLOWED_HOSTS = [config('ALLOWED_HOSTS_1'), config('ALLOWED_HOSTS_2')]
 
 DJANGO_SETTINGS_MODULE = "kawa_product.settings"
 
@@ -81,14 +80,14 @@ WSGI_APPLICATION = 'kawa_product.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': getenv('MYSQL_DATABASE'),
-        'USER': getenv('MYSQL_USER', 'root'),
-        'PASSWORD': getenv('MYSQL_PASSWORD', ''),
-        'HOST': getenv('DB_HOST', 'mysql'),
-        'PORT': int(getenv('MYSQL_PORT', '3307')),
+        'NAME': config('MYSQL_DATABASE'),
+        'USER': config('MYSQL_USER', 'root'),
+        'PASSWORD': config('MYSQL_PASSWORD', ''),
+        'HOST': config('DB_HOST', 'mysql'),
+        'PORT': int(config('MYSQL_PORT', '3307')),
         'TEST': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': getenv('MYSQL_TEST_DATABASE'),
+            'NAME': config('MYSQL_TEST_DATABASE'),
         }
     }
 }
